@@ -3,12 +3,16 @@
 OpsManage:
 ![image](https://github.com/wanyadi/wan_shell/blob/master/OpsManage.jpg)
 
-JumpServer:
-![image](https://github.com/wanyadi/wan_shell/blob/master/JumpServer.jpg)
+Jenkins:
+![image](https://github.com/wanyadi/wan_shell/blob/master/jenkins/Jenkins.jpg)
+![image](https://github.com/wanyadi/wan_shell/blob/master/jenkins/Rancher.jpg)
 
 SQL:
 ![image](https://github.com/wanyadi/wan_shell/blob/master/SQL1.jpg)
 ![image](https://github.com/wanyadi/wan_shell/blob/master/SQL.jpg)
+
+JumpServer:
+![image](https://github.com/wanyadi/wan_shell/blob/master/JumpServer.jpg)
 
 Grafana：
 
