@@ -1,0 +1,56 @@
+# nginx Dockerfile
+# Version 1.0
+
+# Base images 基础镜像
+FROM centos:centos7
+#FROM hub.c.163.com/netease_comb/centos:7
+
+#安装相关依赖
+RUN yum -y update
+RUN yum -y install  gcc gcc-c++ autoconf automake make
+RUN yum -y install  zlib zlib-devel openssl* pcre* wget lua-devel tcping
+
+#MAINTAINER 维护者信息
+MAINTAINER wanyadi wanyadi@ruibogyl.com
+
+#ADD  获取url中的文件,放在当前目录下
+ADD http://nginx.org/download/nginx-1.16.1.tar.gz /tmp/
+#nginx upstream_jdomain模块
+ADD ngx_upstream_jdomain-master/  /usr/local/src/ngx_upstream_jdomain-master/
+
+#切换目录
+WORKDIR  /tmp
+
+RUN mkdir -p {/usr/local/nginx/logs,/var/lock}
+
+#编译安装Nginx
+RUN useradd -M -s /sbin/nologin nginx
+RUN tar -zxvf nginx-1.16.1.tar.gz
+RUN mkdir -p /usr/local/nginx
+RUN cd /tmp/nginx-1.16.1 \
+    && ./configure --prefix=/etc/nginx --user=nginx --group=nginx \
+    --conf-path=/etc/nginx/nginx.conf \
+    --error-log-path=/var/log/nginx/error.log \
+    --http-log-path=/var/log/nginx/access.log \
+    --pid-path=/var/run/nginx.pid \
+    --lock-path=/var/run/nginx.lock \
+    --with-ld-opt="-Wl,-rpath,/usr/local/luajit/lib" \
+    --with-http_stub_status_module \
+    --with-http_ssl_module \
+    --with-http_sub_module \
+    --add-module=/usr/local/src/ngx_upstream_jdomain-master \
+    && make && make install
+#参数说明
+#--prefix 用于指定nginx编译后的安装目录
+#--add-module 为添加的第三方模块，此次添加了fdfs的nginx模块
+#--with..._module 表示启用的nginx模块，如此处启用了http_ssl_module模块
+
+RUN /etc/nginx/sbin/nginx -c /etc/nginx/nginx.conf
+RUN ln -s /usr/local/nginx/sbin/* /usr/local/sbin/
+
+#EXPOSE 映射端口
+EXPOSE 80 443
+
+#CMD 运行以下命令
+#CMD ["nginx"]
+CMD ["/etc/nginx/sbin/nginx","-g","daemon off;"]
