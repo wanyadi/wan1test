@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  
+spec:
+  revisionHistoryLimit: 10
+  template:
+    metadata:
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: label.jst.com/jiqi
+                    operator: In
+                    values:
+                      - dev-app6
+      containers:
+          - image: registry-vpc.cn-zhangjiakou.aliyuncs.com/ruibo_preprod/ruibo-tb-ruibopreprod:5
+            imagePullPolicy: Always
+            name: ruibo-tb-preprod
+            ports:
+              - containerPort: 7849
+                name: p7849
+                protocol: TCP
+              - containerPort: 27849
+                name: p27849
+                protocol: TCP
+            resources:
+              limits:
+                cpu: '4'
+                memory: 2Gi
+              requests:
+                cpu: '1'
+                memory: 512Mi
+            volumeMounts:
+              - mountPath: /mnt/work/ruibo-tb/log
+                name: log-path
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - hostPath:
+            path: /mnt/work/ruibo_tb/log
+            type: DirectoryOrCreate
+          name: log-path

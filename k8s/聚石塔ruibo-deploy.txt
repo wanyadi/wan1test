@@ -1,0 +1,8 @@
+java -jar ruibo-deploy.jar "{\"containerImageLists\":[\"ruibo_preprod/ruibo-tb-ruibopreprod:5\"],\"envId\":25350,\"name\":\"test\",\"totalPartitions\":1}"
+
+
+ansible Third-party-software -e banben=$BUILD_NUMBER -e ali_jingxiang=$ali_jingxiang -e ali_name=$ali_name -e ali_envid=$ali_envid -m shell -a 'java -jar /mnt/work/ruibo-deploy.jar "{\"containerImageLists\":[\"{{ali_jingxiang}}:{{banben}}\"],\"envId\":{{ali_envid}},\"name\":\"{{ali_name}}\",\"totalPartitions\":1}"'
+
+ansible zjk-dev-app6 -m shell -a 'docker ps -a | grep ruibo-canal-adapter &> /dev/null && docker rm -f ruibo-canal-adapter'
+
+ansible zjk-dev-app6 -e banben=$BUILD_NUMBER -m shell -a 'docker run -d --restart=always --name ruibo-canal-adapter --hostname ruibo-canal-adapter --network=host -v /mnt/work/ruibo-canal-adapter/log/:/mnt/work/canal-adapter/logs/ registry-vpc.cn-zhangjiakou.aliyuncs.com/ruibo_preprod/ruibo-canal-adapter-ruibopreprod:{{banben}}'
