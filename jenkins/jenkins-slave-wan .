@@ -1,0 +1,43 @@
+#FROM jenkins/jenkins-slave
+FROM jenkins/ssh-slave
+ENV KUBECTL_VERSION=v1.14.5
+USER root
+RUN echo "deb http://mirrors.163.com/debian/ stretch main" > /etc/apt/sources.list && \
+    echo "deb http://mirrors.163.com/debian/ stretch-updates main non-free contrib" >> /etc/apt/sources.list && \
+    echo "deb http://mirrors.163.com/debian-security/ stretch/updates main non-free contrib" >> /etc/apt/sources.list
+#更改用户为root
+RUN sed -i /etc/ssh/sshd_config \
+        -e 's/#PermitRootLogin.*/PermitRootLogin yes/' \
+        -e 's/#RSAAuthentication.*/RSAAuthentication yes/'
+#添加docker
+RUN apt-get -y update && \
+    apt-get -y install apt-transport-https ca-certificates curl software-properties-common && \
+    curl -fsSL http://mirrors.aliyun.com/docker-ce/linux/debian/gpg | apt-key add - && \
+    add-apt-repository "deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/debian $(lsb_release -cs) stable" && \
+    apt-get -y update && \
+    apt-get -y install docker-ce
+#添加kubectl
+#RUN curl -L https://www.cnrancher.com/download/kubernetes/linux-amd64-${KUBECTL_VERSION}-kubectl -o /usr/local/bin/kubectl \
+#    && chmod +x /usr/local/bin/kubectl
+
+#添加npm
+RUN apt-get -y update && \
+    apt-get install -y nodejs
+#    ln -s /usr/bin/nodejs /usr/bin/node && \
+#    apt-get install -y aptitude
+#添加maven
+COPY apache-maven-3.3.9/ /usr/work/maven/apache-maven-3.3.9/
+RUN export PATH=apache-maven-3.3.9/bin:$PATH
+RUN export PATH=/usr/work/maven/apache-maven-3.3.9/bin:$PATH
+RUN ln -s /usr/work/maven/apache-maven-3.3.9/bin/mvn /usr/local/bin/mvn
+#添加JAVA1.8
+COPY jdk1.8.0_161/ /usr/work/java/jdk1.8.0_161/
+# 设置环境变量
+ENV JAVA_HOME /usr/work/java/jdk1.8.0_161
+ENV JRE_HOME ${JAVA_HOME}/jre
+ENV CLASSPATH .:${JAVA_HOME}/lib:${JRE_HOME}/lib
+ENV PATH ${JAVA_HOME}/bin:$PATH
+
+docker build -t jenkins-slave-wan .
+
+docker run -d -it --name wan-test jenkins-slave-wan:latest
