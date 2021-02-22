@@ -23,7 +23,7 @@ s_Xmx=2048m
 s_Xms=2048m
 s_Xmn=512m
 
-cd /home/jenkins-slave-docker/workspace/${project}/ && mv -f target/*.jar ./app.jar
+cd /home/jenkins-slave-docker/workspace/${project}/ && mv -f ${name}-web/target/${name}-web.jar ./app.jar
 
 #Docker打包
 cat << EOF > entrypoint.sh
