@@ -1,0 +1,14 @@
+https://github.com/apache/rocketmq-exporter#build-docker-image
+https://www.infoq.cn/article/NcSYj_2PQhBlqveuD1Kw
+git clone https://github.com/apache/rocketmq-exporter
+cd rocketmq-exporter
+mvn package -Dmaven.test.skip=true docker:build
+
+docker run -d -it --rm \
+-p 5557:5557 \
+--name rocketmq-exporter \
+-v /etc/timezone:/etc/timezone:ro \
+-v /etc/localtime:/etc/localtime:ro \
+-e rocketmq.config.webTelemetryPath=/metrics \
+-e rocketmq.config.namesrvAddr="10.0.17.79:9876" \
+rocketmq-exporter
