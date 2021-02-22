@@ -3,6 +3,12 @@
 OpsManage:
 ![image](https://github.com/wanyadi/wan_shell/blob/master/OpsManage.jpg)
 
+JumpServer:
+![image](https://github.com/wanyadi/wan_shell/blob/master/JumpServer.jpg)
+
+SQL:
+![image](https://github.com/wanyadi/wan_shell/blob/master/SQL.jpg)
+
 Grafana：
 
 JVM
