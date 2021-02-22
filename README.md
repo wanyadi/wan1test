@@ -7,6 +7,7 @@ JumpServer:
 ![image](https://github.com/wanyadi/wan_shell/blob/master/JumpServer.jpg)
 
 SQL:
+![image](https://github.com/wanyadi/wan_shell/blob/master/SQL1.jpg)
 ![image](https://github.com/wanyadi/wan_shell/blob/master/SQL.jpg)
 
 Grafana：
